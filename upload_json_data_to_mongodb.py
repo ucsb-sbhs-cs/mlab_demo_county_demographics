@@ -25,31 +25,28 @@ def main():
                     help='the file you want to upload')
 
     args = parser.parse_args()
+	
+	# connect to the MongoDB database
+
+    url = os.environ["MONGO_URI"]
+    
+    client = pymongo.MongoClient(url)
+    db = client[os.environ["MONGO_DBNAME"]]
+    db.authenticate(os.environ["MONGO_USERNAME"],os.environ["MONGO_PASSWORD"])
+    collection = db['counties']
 
     # read contents of the json file
     
     with open(args.jsonFile) as f:
         content = f.read()
         content_obj = json.loads(content)
-        document = { "food_access" : content_obj }
-
-    # connect to the MongoDB database
-
-    url = 'mongodb://{}:{}@{}:{}/{}'.format(
-        os.environ["MONGO_USERNAME"],
-        os.environ["MONGO_PASSWORD"],
-        os.environ["MONGO_HOST"],
-        os.environ["MONGO_PORT"],
-        os.environ["MONGO_DBNAME"])
+        for c in content_obj:
+            key = c["State"]+ " " + c["County"]
+            key = key.replace(".", "")
+            c["_id"] = key
+            # insert it 
+            object_id = collection.insert_one(c).inserted_id
     
-    client = pymongo.MongoClient(url)
-    db = client[os.environ["MONGO_DBNAME"]]
-    collection = db['food_access']
-
-    # insert it 
-    object_id = collection.insert_one(document).inserted_id
-    
-    print("object_id={}".format(object_id))
     
         
 if __name__=="__main__":

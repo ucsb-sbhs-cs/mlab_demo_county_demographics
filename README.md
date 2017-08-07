@@ -27,6 +27,10 @@ A snapshot of that file is in this repo in
 
     The value in env.sh come from the screen in MLab for the MongoDB Deployment
     (see: https://ucsb-sbhs-cs.github.io/topics/mongodb_mlab/ )
+	
+	Note for Windows Users:  Copy the env.sh.SAMPLE to a file called env.bat and change all "export" commands to "set" commands.
 
-2.  
+2.  Run python upload_json_data_to_mongodb.py demographics.json to upload the contents to a MongoDB database.
+
+3. Run python get_json_data_to_mongodb.py to retrieve a record by its primary key.
 
